@@ -46,7 +46,7 @@ SIG: 	the output of the sensor (signal)
 
 In the Arduino IDE, do not forget to set up the `Tools` > `Port` to the USB port that your board is connected too. 
 
-Connect the luminosity sensor to the WeMos. We use an analog luminosity sensor (luminance sensor v1.0). The signal cable (in our case the yellow one) if connected to the **A0** pin on the WeMos:
+Connect the luminosity sensor to the WeMos. We use an analog luminosity sensor (luminance sensor v1.0). The signal cable (in our case the yellow one) is connected to the **A0** pin on the WeMos:
 
 ![image2](https://github.com/Emelieh21/the-house-of-the-rising-blinds/blob/master/assets/wemos_sensor_3jpg.jpg)
 
