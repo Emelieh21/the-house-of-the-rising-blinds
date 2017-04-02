@@ -67,7 +67,7 @@ void loop(){
 }
 ```
 
-To check the printed values, click on the _Serial Monitor_ in the Arduino IDE.
+To check the printed values, click on the _Serial Monitor_ in the Arduino IDE (little icon in the right upper corner).
 
 The outside daylight - whether there is full sun or a cloud, gives us always the **maximum value: 1024**. Inside the house during the day we get a value of around 400/450.
 
