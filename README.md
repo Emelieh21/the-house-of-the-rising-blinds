@@ -2,7 +2,7 @@
 
 Today we finally getting started with our next SmartHome project on the list: **The Blind Hack**. My personal dream hack: install a luminosity sensor close to the living room window that communicates with a relay connected to the blinds in the bed room, to make the blinds go up automatically when the sun starts shining (or on a cloudy day in Berlin: it gets light outside).
 
-![image](D:\SundayFunday\risingblinds.jpg)
+![image](https://github.com/Emelieh21/the-house-of-the-rising-blinds/blob/master/assets/risingblinds.jpg)
 
 ## STEP 1: Resetting the OrangePi
 
@@ -48,7 +48,7 @@ In the Arduino IDE, do not forget to set up the `Tools` > `Port` to the USB port
 
 Connect the luminosity sensor to the WeMos. We use an analog luminosity sensor (luminance sensor v1.0). The signal cable (in our case the yellow one) if connected to the **A0** pin on the WeMos:
 
-![image2](D:\SundayFunday\wemos_sensor_3jpg.jpg)
+![image2](https://github.com/Emelieh21/the-house-of-the-rising-blinds/blob/master/assets/wemos_sensor_3jpg.jpg)
 
 To see the values from the luminosity sensor, you can flash the following Arduino code to the WeMos:
 
@@ -67,9 +67,7 @@ void loop(){
 }
 ```
 
-To check the printed values, click on the _Serial Monitor_ in the Arduino IDE:
-
-![image](D:\arduino_pic.png)
+To check the printed values, click on the _Serial Monitor_ in the Arduino IDE.
 
 The outside daylight - whether there is full sun or a cloud, gives us always the **maximum value: 1024**. Inside the house during the day we get a value of around 400/450.
 
@@ -77,7 +75,7 @@ Great! Our sensor is sending us the values we need. Now let's connect it to the 
 
 Now your device in the relayr cloud should start receiving values:
 
-![image2](D:\SundayFunday\cloud.jpg)
+![image2](https://github.com/Emelieh21/the-house-of-the-rising-blinds/blob/master/assets/cloud.jpg)
 
 ## STEP 3: Make the Light Sensor Interact with the Sonos
 
