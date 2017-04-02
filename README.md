@@ -1,6 +1,6 @@
 # The House of The Rising Blinds
 
-Today we finally getting started with our next SmartHome project on the list: **The Blind Hack**. My personal dream hack: install a luminosity sensor close to the living room window that communicates with a relay connected to the blinds in the bed room, to make the blinds go up automatically when the sun starts shining (or on a cloudy day in Berlin: it gets light outside).
+Today we're finally getting started with our next SmartHome project on the list: **The Blind Hack**. My personal dream hack: install a luminosity sensor close to the living room window that communicates with a relay connected to the blinds in the bed room, to make the blinds go up automatically when the sun starts shining (or on a cloudy day in Berlin: it gets light outside).
 
 ![image](https://github.com/Emelieh21/the-house-of-the-rising-blinds/blob/master/assets/risingblinds.jpg)
 
