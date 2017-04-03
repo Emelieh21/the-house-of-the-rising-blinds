@@ -79,7 +79,7 @@ Now your device in the relayr cloud should start receiving values:
 
 ## STEP 3: Make the Light Sensor Interact with the Sonos
 
-#### 3.1 Connect the Sonos and the Luminosity Sensor
+### 3.1 Connect the Sonos and the Luminosity Sensor
 
 As described in [one of our earlier respositories](https://github.com/chronoclast/sensational-sonos-sensor-synchronization), we have a server running in the house that makes it possible to control the sonos via an API. In this next step we make the values of the luminosity sensor control the sonos. In this first simple script, we make the sonos stop playing every time it gets dark (luminosity < 50). If it gets light again (luminosity > 50), the sonos will start to play again.
 
@@ -107,7 +107,7 @@ Go to the folder where you saved your script and type:
 
 In the script, I changed the value for the sonos to go on to 400 (average daylight value in our living room), which made the sonos start playing this moring at 8 AM. Quite correct time, however what if I would like it to start a little earlier - or not start at all? - without having to ssh the orange pi every time to change the values? Maybe Alexa can help out.
 
-#### 3.2 Make it Possible to Adjust the Script with Alexa
+### 3.2 Make it Possible to Adjust the Script with Alexa
 
 First we need a place where Alexa can send values to that the script can access. We can add another reading to the device we already created in the relayr cloud. Go to `Models` > `By me` > Click on your luminosity device > `EDIT` > Click on the `+` next to "Readings". set the meaning to "alexa" and the Value type to "integer".
 
