@@ -24,21 +24,23 @@ client.on('connect', function() {
 
 	//DEBUG: Prints the status of the door
 	console.log(sunStatus);
-
-	if (sunStatus < 50){
-		flag = true;
-		console.log("");
-		request('http://<IP_OF_YOUR_SONOS_SERVER_HERE>:5005/salon/pause', function (error, response, body) {
-			if (!error && response.statusCode == 200) {
-				console.log(body)
-			}
-		})
+	
+	if (flag == false){
+		if (sunStatus < 50){
+			flag = true;
+			console.log("");
+			request('http://<IP_OF_YOUR_SONOS_SERVER_HERE>:5005/<SONOS_ROOM_NAME>/pause', function (error, response, body) {
+				if (!error && response.statusCode == 200) {
+					console.log(body)
+				}
+			})
+		}
 	}
 	if (flag == true){
 		if (sunStatus > 50){
 			flag = false;
 			console.log("");
-			request('http://<IP_OF_YOUR_SONOS_SERVER_HERE>:5005/salon/play', function (error, response, body) {
+			request('http://<IP_OF_YOUR_SONOS_SERVER_HERE>:5005/<SONOS_ROOM_NAME>/play', function (error, response, body) {
 				if (!error && response.statusCode == 200) {
 					console.log(body)
 				}

@@ -1,0 +1,4 @@
+WakeUpIntent {itemOne}
+WakeUpIntent for {itemOne}
+WakeUpIntent to {itemOne}
+WakeUpIntent {itemOne} the WakeUp

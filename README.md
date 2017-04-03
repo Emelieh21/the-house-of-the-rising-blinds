@@ -2,7 +2,7 @@
 
 Today we're finally getting started with our next SmartHome project on the list: **The Blind Hack**. My personal dream hack: install a luminosity sensor close to the living room window that communicates with a relay connected to the blinds in the bed room, to make the blinds go up automatically when the sun starts shining (or on a cloudy day in Berlin: it gets light outside).
 
-![image](https://github.com/Emelieh21/the-house-of-the-rising-blinds/blob/master/assets/risingblinds.jpg)
+![image](./assets/risingblinds.jpg)
 
 ## STEP 1: Resetting the OrangePi
 
@@ -48,7 +48,7 @@ In the Arduino IDE, do not forget to set up the `Tools` > `Port` to the USB port
 
 Connect the luminosity sensor to the WeMos. We use an analog luminosity sensor (luminance sensor v1.0). The signal cable (in our case the yellow one) is connected to the **A0** pin on the WeMos:
 
-![image2](https://github.com/Emelieh21/the-house-of-the-rising-blinds/blob/master/assets/wemos_sensor_3jpg.jpg)
+![image2](./assets/wemos_sensor_3jpg.jpg)
 
 To see the values from the luminosity sensor, you can flash the following Arduino code to the WeMos:
 
@@ -75,9 +75,11 @@ Great! Our sensor is sending us the values we need. Now let's connect it to the 
 
 Now your device in the relayr cloud should start receiving values:
 
-![image2](https://github.com/Emelieh21/the-house-of-the-rising-blinds/blob/master/assets/cloud.jpg)
+![image2](./assets/cloud.jpg)
 
 ## STEP 3: Make the Light Sensor Interact with the Sonos
+
+#### 3.1 Connect the Sonos and the Luminosity Sensor
 
 As described in [one of our earlier respositories](https://github.com/chronoclast/sensational-sonos-sensor-synchronization), we have a server running in the house that makes it possible to control the sonos via an API. In this next step we make the values of the luminosity sensor control the sonos. In this first simple script, we make the sonos stop playing every time it gets dark (luminosity < 50). If it gets light again (luminosity > 50), the sonos will start to play again.
 
@@ -93,12 +95,35 @@ The only thing you need to do is put the credentials of your relayr device in th
 
 And play with your sonos by covering the light sensor and uncovering it.
 
+Now you can make the script for example run on a raspberry or orange pi. **Tip**: in case you are running the script on seperate device like a orange pi, you can make it keep running even if you close the ssh terminal, with a npm package called [forever](https://github.com/foreverjs/forever).
 
+you can install it with the following command:
+
+```$ [sudo] npm install forever -g```
+
+Go to the folder where you saved your script and type:
+
+``$ forever start server.js``
+
+In the script, I changed the value for the sonos to go on to 400 (average daylight value in our living room), which made the sonos start playing this moring at 8 AM. Quite correct time, however what if I would like it to start a little earlier - or not start at all? - without having to ssh the orange pi every time to change the values? Maybe Alexa can help out.
+
+#### 3.2 Make it Possible to Adjust the Script with Alexa
+
+First we need a place where Alexa can send values to that the script can access. We can add another reading to the device we already created in the relayr cloud. Go to `Models` > `By me` > Click on your luminosity device > `EDIT` > Click on the `+` next to "Readings". set the meaning to "alexa" and the Value type to "integer".
+
+The quick Alexa skill we just made consists of the [lambda_function](./alexa-files/lambda_function.py), [intent_schema](./alexa-files/intent_schema.json), [LIST_OF_ITEMS_ONE](./alexa-files/LIST_OF_ITEMS_ONE.txt) and the [sample_utterances](./alexa-files/sample_utterances.txt) that are added to this repository. It is a very simple skill that only accepts the commands **"early"/"zeitig"** (luminosity 260 - not sure yet how early this is), **"later"/"chill"** (luminosity 400 - around 8 AM this time of the year) and **"holiday"/"weekend"** (sonos should not start at all).
+
+Now we need to make some adjustments to the 03-welcome-home-sonos_sunshine.js script to make it controlable. For this I had translate the 03-welcome-home_sunshine.js file to python (in order to deal with http and mqtt input). This translation plus the addition of the _alexaStatus_ you can find in the 03-welcome-home_sunshine.py file. 
+
+To make python file run "forever" in the background, you can use forever as well:
+
+```$ forever start -c python 03-welcome-home_sunshine.py```
+
+Let's see tomorrow morning if the script worked.
 
 ------------ TO BE CONTINUED ------------
 
 Up next: 
 
-* replace the OrangePi to the hallway
-* run the scripts on the OrangePi with forever
-* change the 03-welcome-home_sunshine.js script so it will make the sonos go on in the morning when we are suppossed to wake up. 
+* Involve the kettle too!
+* Apply the wifi switch to the blinds
