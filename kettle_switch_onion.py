@@ -31,9 +31,10 @@ while True:
         if flag == False:
             last_sent = datetime.datetime.now()
             flag = True
-        # If the value has been True for more than a minute (60000 ms), a POST request is send to change to "False."
+        # If the value has been True for more than 4 minutes (one minute = 60000 ms), 
+		# a POST request is send to change to "False."
         if flag == True:
-            if passed_time(last_sent) > 2400000:
+            if passed_time(last_sent) > 240000:
                 data = {'meaning': 'kettle', 'value': 'false'}
                 r = requests.post('https://api.relayr.io/devices/<YOUR_DEVICE_ID>/data', data=json.dumps(data), headers=headers)
                 flag = False
