@@ -202,7 +202,7 @@ Working with the pure luminosity values, it looks almost impossible to make the 
 
 ![image](./assets/boxplot.png)
 
-I have decided just to add a time check in the script - so the trigger won't go off before 07:00 am. Not the ideal solution - but for now okay-ish and we can still make the script more sophistacted ones the blinds are integrated.
+I have decided it makes more sense to use a **time check** in the script that triggers the kettle and the Sonos (meaning: it goes on whenever it is 07:30 or 07:50 am - adjustable with Alexa). It seems more logical for this application. For raising the blinds however - it would still be cool to make it interact with the luminosity values. For now - you can find the new Python script that triggers the kettle and the Sonos at a set time in the morning in the [04-sonos-kettle-alarm.py](04-sonos-kettle-alarm.py) file.
 
 
 
@@ -211,7 +211,19 @@ I have decided just to add a time check in the script - so the trigger won't go 
 Up next: 
 
 * ~~change the 03-welcome-home script to make http get request to the other device (alexa Kettle)~~ 
+
 * ~~install chron to make the script run non-stop from startup~~ 
+
 * ~~Replug the union and the kettle in the kitchen (don't want to keep that on my laptop)~~ 
-* research the change of luminosity values and come up with a plan to make the wake up go on at a sensible time
-* Apply the wifi switch to the blinds
+
+* ~~change the trigger script for the sonos/kettle to start at a certain time instead of a certain luminosity, make the time settable by Alexa (OrangePi)~~ 
+
+* Make the slackbot for the kettle run on the onion (~~Onion~~ not enough memory - maybe try OPi)
+
+* Apply a relay to the blinds
+
+* Adjust the previous script of the kettle/sonos to make it control the blinds instead (OrangePi) make it send a True to the cloud whenever the blind should go up
+
+* research the change of luminosity values and come up with a plan to make the blinds go up smoothly
+
+  ​
