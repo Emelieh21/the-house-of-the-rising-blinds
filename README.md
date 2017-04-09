@@ -77,7 +77,7 @@ Now your device in the relayr cloud should start receiving values:
 
 ![image2](./assets/cloud.jpg)
 
-## STEP 3: Make the Light Sensor Interact with the Sonos
+## STEP 3: Make the Light Sensor Interact with the Sonos & the kettle 
 
 ### 3.1 Connect the Sonos and the Luminosity Sensor
 
@@ -121,9 +121,97 @@ To make python file run "forever" in the background, you can use forever as well
 
 Let's see tomorrow morning if the script worked.
 
+### 3.3 Involve the kettle too!
+
+I can tell you the script of last section worked - the sonos went on at luminosity 260 - which happened to be around **6:00 am** in the morning. We need to work on perfectionizing the triggers a bit still. We will come back to that later.
+
+First, we continue with the next objective: involve the kettle too! We already hacked our kettle before - as explained in [this repository](https://github.com/Emelieh21/brand-new-kettle-hack). The end goal is to make the luminosity sensor interact with a relay that is connected to the blind switch. So it makes sense to reuse our kettle that we hacked with a relay already - to prepare the scripts for this.
+
+This time instead of a Intel Edison board we use an **Onion Omega2** with an Arduino breakout board. The setup of this device is wonderfully documented on [the onion website](https://docs.onion.io/omega2-docs/get-started.html). 
+
+Once you have setup your device and you are able to ssh it, we can prepare it for the script that we will be running to connect the relay. This is a python script - luckily, the Onion Omega2 comes with a light version of python preinstalled. We need to install the [onionGpio](https://docs.onion.io/omega2-docs/gpio-python-module.html) module for the connection with the relay.
+
+SSH the onion:
+
+```$ 
+$ ssh root@<IP_OF_YOUR_ONION>
+```
+
+Once in the Onion, you can install the onionGpio module by:
+
+```
+$ opkg update
+$ opkg install python-light pyOnionGpio
+```
+
+Now if you launch python and `import onionGpio` it should work.
+
+![image](./assets/onion_omega.png)
+
+For the ease of it - I installed `pip` as well, because I will need the `requests` module. Also, this is [well documented](https://docs.onion.io/omega2-docs/installing-and-using-python.html#using-pip-to-install-python-modules).
+
+```
+$ opkg install python-pip
+$ pip install requests
+```
+
+
+
+For the interaction with the kettle we need another virtual device in the relayr cloud. In the last section we were sending values to an relayr device with Alexa - this will be a similar device, however it needs only one reading with a **boolean input**. We use the device we created already in the kettle hack. More info on that [here](https://github.com/Emelieh21/brand-new-kettle-hack/blob/master/setup_devices_relayr_cloud.md). 
+
+The [kettle_switch_onion.py](kettle_switch_onion.py) script checks the value (_True_ or _False_) of a device in the relayr cloud (in our case the device is called "Kettle" and the meaning is "kettle"). When the meaning is set to true - it sends a 1 to the relay - which makes the kettle boil. Once you have your new device set up and the device id ready, you can push the python script to the device with scp (don't forget to adjust the token and the device id in the script!):
+
+```
+$ cd <folder_where_you_saved_the_py_script>
+$ scp kettle_switch_onion.py root@<ip_of_your_onion>:~/
+```
+
+![image](./assets/relay_onion.jpg)
+
+And then, if you ssh your onion again, you can keep this script running  in the background with:
+
+ ```$ python kettle_switch_onion.py & ```
+
+We still need to update the 03-welcome-home_sunshine.py script, to send a http post request to the kettle device on the relayr cloud whenever the luminosity hits the trigger value.
+
+In the [03-welcome-home_sunshine_coffee.py](03-welcome-home_sunshine_coffee.py) script the request to the alexa device is added. I pushed it to the Orange Pi:
+
+```$ scp 03-welcome-home_sunshine_coffee.py orange@192.168.178.64:~/PushToPi/WithPython ```
+
+You can stop the forever process of the other welcome-home script with:
+
+```$ forever stop 03-welcome-home_sunshine.py```
+
+(check if it worked with `forever list`). And then run the new script with:
+
+```$ forever start -c python 03-welcome-home_sunshine_coffee.py```
+
+### 3.4 Explore the luminosity data in R to improve the trigger
+
+Now if everything works out, our Sonos will start playing in the morning tomorrow and our kettle will start boiling our coffee water. **HOWEVER**, it would be nice to have a trigger value that makes a bit more sense. It turned out that 260 and 400 are not very reliable - since on a cloudy day the luminosity does not even go over 200 before 9:00 am and on a sunny day, 1024 is reached at 6:00 am. 
+
+Luckily, we can download the values of our sensor from relayr via [services.relayr.io](https://services.relayr.io/batch/executions). You can download the data here as a csv file. The [csv](./assets/luminosity_readings.csv) with the values from my sensor are also included.
+
+The question I am trying to answer here is: _what value/pattern occures everyday somewhere between 7:15  and 7:45 am - but not before?_ (because that is when eventually I would like the blinds to open, the coffee to start boiling and the Sonos to start playing). As you can see here in the data set with the luminosity values of the different days put next to each other, this is not going to be easy:
+
+![image](./assets/table.png)
+
+![image](./assets/luminosity_graph.png)
+
+Working with the pure luminosity values, it looks almost impossible to make the Sonos/Kettle go on at a similar time. As a second exploration, I checked the increase in luminosity every 10 minutes between 06:00 - 08:00 am. This is diplayed in the boxplot below.  
+
+![image](./assets/boxplot.png)
+
+I have decided just to add a time check in the script - so the trigger won't go off before 07:00 am. Not the ideal solution - but for now okay-ish and we can still make the script more sophistacted ones the blinds are integrated.
+
+
+
 ------------ TO BE CONTINUED ------------
 
 Up next: 
 
-* Involve the kettle too!
+* ~~change the 03-welcome-home script to make http get request to the other device (alexa Kettle)~~ 
+* ~~install chron to make the script run non-stop from startup~~ 
+* ~~Replug the union and the kettle in the kitchen (don't want to keep that on my laptop)~~ 
+* research the change of luminosity values and come up with a plan to make the wake up go on at a sensible time
 * Apply the wifi switch to the blinds
