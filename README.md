@@ -204,6 +204,95 @@ Working with the pure luminosity values, it looks almost impossible to make the 
 
 I have decided it makes more sense to use a **time check** in the script that triggers the kettle and the Sonos (meaning: it goes on whenever it is 07:30 or 07:50 am - adjustable with Alexa). It seems more logical for this application. For raising the blinds however - it would still be cool to make it interact with the luminosity values. For now - you can find the new Python script that triggers the kettle and the Sonos at a set time in the morning in the [04-sonos-kettle-alarm.py](04-sonos-kettle-alarm.py) file.
 
+### 3.5 Fixing current bugs
+
+Coming back from easter holidays we discovered that there are some issues with the way our project has been working so far:
+
+1) The relayr token keeps expiring, meaning that after **a week or two** our scripts stop working and the token needs to be replaced by a new one in all scripts. This is annoying since many scripts depend on this token (on the Orange Pi, the Onion and the Alexa AWS function). 
+
+2) The **Orange Pi won't let us SSH it anymore** for some reason - eventhough it is still working and the IP is the same as before. We get the following error:
+
+```bash
+emelie@Lubuntu-VirtualBox:~$ ssh root@192.168.178.64
+ssh_exchange_identification: Connection closed by remote host
+```
+
+The same happens from Jaime's laptop and this are the debug messages:
+
+```bash
+emelie@Lubuntu-VirtualBox:~$ ssh -v root@192.168.178.64
+OpenSSH_7.2p2 Ubuntu-4ubuntu2.1, OpenSSL 1.0.2g  1 Mar 2016
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug1: /etc/ssh/ssh_config line 19: Applying options for *
+debug1: Connecting to 192.168.178.64 [192.168.178.64] port 22.
+debug1: Connection established.
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/emelie/.ssh/id_rsa type -1
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/emelie/.ssh/id_rsa-cert type -1
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/emelie/.ssh/id_dsa type -1
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/emelie/.ssh/id_dsa-cert type -1
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/emelie/.ssh/id_ecdsa type -1
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/emelie/.ssh/id_ecdsa-cert type -1
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/emelie/.ssh/id_ed25519 type -1
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/emelie/.ssh/id_ed25519-cert type -1
+debug1: Enabling compatibility mode for protocol 2.0
+debug1: Local version string SSH-2.0-OpenSSH_7.2p2 Ubuntu-4ubuntu2.1
+ssh_exchange_identification: Connection closed by remote host
+
+```
+
+Apparently, after exploring a bit this error seems quite common - but I haven't figured out yet why it it happens and how we can fix it without unplugging (and possible corrupting) the OPi (again). 
+
+#### 3.5.1 100 year valid relayr token
+
+It seems that for making a longer lasting relayr token we need to work with [a relayr project](https://docs.relayr.io/cloud/going-further/token-creation/#make-a-project). I followed the steps and successfully created my project "HomeIntegration" (I put "https://dev.relayr.io" as a URL).
+
+Now let's do the initial authorization by adjusting the URL provided:
+
+`https://api.relayr.io/oauth2/auth?redirect_uri=https://dev.relayr.io&response_type=code&client_id=<YOUR_APP_ID>&scope=access-own-user-info`
+
+If you log in to your relayr acount now - a code will appear in the URL, like this:
+
+`https://dev.relayr.io/?code=1NiBgHqUMAx8Y0zI5V9n`
+
+We need this code for the API call we are going to make next to get our long lasting access token.
+
+Let's make that API call. 
+
+```bash
+$ curl -X POST \
+       -H 'Authorization: Bearer yN.HjUVaGnn8Wyno8X3SRmkH0aUVXxg5' \
+       -H 'Content-Type: application/x-www-form-urlencoded' \
+       -H 'Cache-Control: no-cache' \
+       -d 'code=cfLARVOJswKuchSqwvnQ&client_id=7cce50c7-871c-43ab-a62d-e9076e7d2e46&client_secret=wJ2PkB7HahD1_xVfcebsdPVyGUcKg4P_' \
+       https://api.relayr.io/oauth2/token
+```
+
+The bearer requested is your **regular relayr token**, which you can find by clicking on "account" when you are logged in to developer.relayr.io. The code is the **code** you just got from the URL and the client_id & client_secret are the **appId** & **clientSecret** from your project.
+
+The API call will return you a access token. This one should be **valid for a 100 years**.
+
+Now we can simply replace the token in all our scripts with this new token (replace the code part - leave the "Bearer " part there.)
+
+#### 3.5.2 Regain access to the Orange Pi
+
+I explored posts like [this one](http://edoceo.com/notabene/ssh-exchange-identification) and others.
+
+Remote restart?
+
+`SHUTDOWN /m \\192.168.178.64 /r /t 30 /c "Time to go to bed"`
+
+Nothing worked so far.
+
+In the end we moved our TV monitor to the hallway to try to log in on the Orange Pi itself. Even this did not work. Funnily enough all the scripts on the pi kept running fine (like the Sonos API server). We did an unplug after all. I thought the Orange Pi would be corrupted again. But to our surprise, we put it on again and **everything worked again**, the normal log in, the ssh...
+
 
 
 ------------ TO BE CONTINUED ------------
@@ -217,6 +306,12 @@ Up next:
 * ~~Replug the union and the kettle in the kitchen (don't want to keep that on my laptop)~~ 
 
 * ~~change the trigger script for the sonos/kettle to start at a certain time instead of a certain luminosity, make the time settable by Alexa (OrangePi)~~ 
+
+* ~~Generate a 100 years relayr token~~ 
+
+* Find out why it is not possible anymore to ssh the Orange Pi & regain access
+
+* Change the token in all the scripts
 
 * Make the slackbot for the kettle run on the onion (~~Onion~~ not enough memory - maybe try OPi)
 
