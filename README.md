@@ -293,6 +293,20 @@ Nothing worked so far.
 
 In the end we moved our TV monitor to the hallway to try to log in on the Orange Pi itself. Even this did not work. Funnily enough all the scripts on the pi kept running fine (like the Sonos API server). We did an unplug after all. I thought the Orange Pi would be corrupted again. But to our surprise, we put it on again and **everything worked again**, the normal log in, the ssh...
 
+_Useful commands:_
+
+To stop a script that started running in the background with **& ** (like in our case on the Onion):
+
+```bash 
+$ top
+```
+
+This will list everything that is running on the machine. Now you can look with PID belongs to the program you want to kill and do:
+
+```bash
+$ kill <PID>
+```
+
 
 
 ------------ TO BE CONTINUED ------------
