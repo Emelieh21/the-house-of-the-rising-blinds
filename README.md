@@ -323,7 +323,7 @@ hit `esc` and`ZZ` to save and quit VI.
 
 ### 3.7 Running into trouble again
 
-Once again our Orange Pi got corrupted - and we decided to exchange this buddy for our Raspberry Pi. We set everything up but unfortunately - the Dynamic DSN connection that we used for the communication between Alexa & the Sonos in [this earlier repository](https://github.com/chronoclast/sensational-sonos-sensor-synchronization/tree/master/alexa-integration) stopped working. Strangly, right after replacing the IP of the Orange PI with the one of the Raspberry PI everything worked fine still. However - now suddenly our host on [ydns.io](https://ydns.io/) has been removed.
+Once again our Orange Pi got corrupted - and we decided to exchange this buddy for our Raspberry Pi. We set everything up but unfortunately - the Dynamic DSN that we used for the communication between Alexa & the Sonos in [this earlier repository](https://github.com/chronoclast/sensational-sonos-sensor-synchronization/tree/master/alexa-integration) stopped working. Strangly, right after replacing the IP of the Orange PI with the one of the Raspberry PI everything worked fine still. However - now suddenly our host on [ydns.io](https://ydns.io/) has been removed.
 
 The reason I am writing this down is because after creating a new host with a different domain, but the same name (**alexa-integration**.domain.something) & changing the Dynamic DSN settings in our network- things still did not work. Strangly, deleting this host and creating a new one with a **new name & a new domain** seemed to have solved the problem. I have no clue why. 
 
