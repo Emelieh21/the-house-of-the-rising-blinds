@@ -307,6 +307,26 @@ This will list everything that is running on the machine. Now you can look with 
 $ kill <PID>
 ```
 
+### 3.6 Run the kettle script on the onion with cron
+
+Our python script on the onion that controls the kettle keeps going off. Therefore, we want to make it restart automatically after it crashes with [cron](https://unix.stackexchange.com/questions/107939/how-to-restart-the-python-script-automatically-if-it-is-killed-or-dies):
+
+`crontab -e`
+
+We have only stupid VI, so [trying to figure out now how to do anything with this editor](http://www.adminschoice.com/vi-editor-quick-reference).
+
+Just typed an `a`that supposedly allows you to insert something
+
+`*/5 * * * * pgrep -f kettle_switch_onion.py || nohup python /root/kettle_switch_onion.py > test.out`
+
+hit `esc` and`ZZ` to save and quit VI.
+
+### 3.7 Running into trouble again
+
+Once again our Orange Pi got corrupted - and we decided to exchange this buddy for our Raspberry Pi. We set everything up but unfortunately - the Dynamic DSN connection that we used for the communication between Alexa & the Sonos in [this earlier repository](https://github.com/chronoclast/sensational-sonos-sensor-synchronization/tree/master/alexa-integration) stopped working. Strangly, right after replacing the IP of the Orange PI with the one of the Raspberry PI everything worked fine still. However - now suddenly our host on [ydns.io](https://ydns.io/) has been removed.
+
+The reason I am writing this down is because after creating a new host with a different domain, but the same name (**alexa-integration**.domain.something) & changing the Dynamic DSN settings in our network- things still did not work. Strangly, deleting this host and creating a new one with a **new name & a new domain** seemed to have solved the problem. I have no clue why. 
+
 
 
 ------------ TO BE CONTINUED ------------
